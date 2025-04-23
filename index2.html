@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happily Dreams Events | Luxury Event Planning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --gold: #d4af37;
+            --gold-light: #f5d07a;
+            --white: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--white);
+            background-color: var(--primary-dark);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        h1, h2, h3, .font-luxury {
+            font-family: 'Cinzel Decorative', serif;
+        }
+        
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Three.js canvas */
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        /* Glassmorphism effect */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Gold gradient text */
+        .gold-text {
+            background: linear-gradient(135deg, #d4af37, #f5d07a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Button hover effect */
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37, #f5d07a);
+            color: var(--primary-dark);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
+        }
+        
+        /* Floating label form */
+        .form-group {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.5);
+            color: var(--white);
+            padding: 0.5rem 0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-bottom: 1px solid var(--gold);
+        }
+        
+        .form-label {
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            color: rgba(248, 250, 252, 0.7);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-1.5rem);
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+        
+        /* Event card hover effect */
+        .event-card {
+            transition: all 0.4s ease;
+            transform-origin: center;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gold);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--primary-dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+        
+        /* Section fade-in animation */
+        .section-fade {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .section-fade.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Three.js Background Canvas -->
+    <div id="three-canvas"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 py-4 px-6 md:px-12 transition-all duration-300">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold gold-text">Happily Dreams Events</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#about" class="text-white hover:text-gold-300 transition">About</a>
+                <a href="#services" class="text-white hover:text-gold-300 transition">Services</a>
+                <a href="#portfolio" class="text-white hover:text-gold-300 transition">Portfolio</a>
+                <a href="#testimonials" class="text-white hover:text-gold-300 transition">Testimonials</a>
+                <a href="#contact" class="text-white hover:text-gold-300 transition">Contact</a>
+            </div>
+            <button class="md:hidden text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="container mx-auto px-6 md:px-12 text-center z-10">
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 gold-text">Happily Dreams Events</h1>
+            <p class="text-xl md:text-2xl font-serif mb-12 text-white opacity-90">Crafting Timeless Celebrations</p>
+            <a href="#contact" class="btn-gold px-8 py-4 rounded-full font-bold text-lg inline-block">Book a Consultation</a>
+        </div>
+        
+        <!-- Floating particles (will be added via Three.js) -->
+        <div id="particles-container"></div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="py-20 md:py-32 relative section-fade">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0 md:pr-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 gold-text">Our Story</h2>
+                    <p class="text-lg mb-6 opacity-90">Founded in 2010, Happily Dreams Events has established itself as a premier luxury event planning company, creating unforgettable experiences for discerning clients worldwide.</p>
+                    <p class="text-lg mb-8 opacity-90">Our team of passionate professionals combines creativity with meticulous attention to detail, ensuring every event we produce is nothing short of extraordinary.</p>
+                    <div class="flex space-x-4">
+                        <div class="glass-card p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-2 gold-text">500+</h3>
+                            <p class="opacity-80">Events Organized</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-2 gold-text">50+</h3>
+                            <p class="opacity-80">Countries</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 relative">
+                    <div class="relative aspect-w-16 aspect-h-9 rounded-xl overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-gold-500 to-transparent opacity-20 animate-pulse"></div>
+                        <img src="https://images.unsplash.com/photo-1519671488599-3fafb1b0c013?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Luxury event setup" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 w-24 h-24 border-t-2 border-l-2 border-gold-500 opacity-50"></div>
+                    <div class="absolute -top-6 -right-6 w-24 h-24 border-b-2 border-r-2 border-gold-500 opacity-50"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="py-20 md:py-32 bg-gradient-to-b from-primary-dark to-secondary-dark section-fade">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 gold-text">Events We Cover</h2>
+                <p class="text-lg max-w-2xl mx-auto opacity-90">From intimate gatherings to grand celebrations, we specialize in creating magical moments for every occasion.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Wedding Card -->
+                <div class="event-card glass-card p-8 rounded-lg relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-gold-500 to-transparent opacity-10 group-hover:opacity-20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 mb-6 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-ring text-2xl text-gold-300"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 gold-text">Luxury Weddings</h3>
+                        <p class="opacity-90 mb-6">Bespoke wedding celebrations that reflect your unique love story, with impeccable attention to every detail.</p>
+                        <a href="#" class="text-gold-300 hover:text-gold-100 font-medium inline-flex items-center">
+                            Learn More <i class="fas fa-chevron-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Corporate Card -->
+                <div class="event-card glass-card p-8 rounded-lg relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-gold-500 to-transparent opacity-10 group-hover:opacity-20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 mb-6 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-briefcase text-2xl text-gold-300"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 gold-text">Corporate Events</h3>
+                        <p class="opacity-90 mb-6">Impress your clients and employees with unforgettable corporate gatherings that achieve business objectives.</p>
+                        <a href="#" class="text-gold-300 hover:text-gold-100 font-medium inline-flex items-center">
+                            Learn More <i class="fas fa-chevron-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Private Card -->
+                <div class="event-card glass-card p-8 rounded-lg relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-gold-500 to-transparent opacity-10 group-hover:opacity-20 transition duration-500"></div>
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 mb-6 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center">
+                            <i class="fas fa-champagne-glasses text-2xl text-gold-300"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 gold-text">Private Celebrations</h3>
+                        <p class="opacity-90 mb-6">Exclusive parties and milestone celebrations designed to create lasting memories with your closest circle.</p>
+                        <a href="#" class="text-gold-300 hover:text-gold-100 font-medium inline-flex items-center">
+                            Learn More <i class="fas fa-chevron-right ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 md:py-32 relative section-fade">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 gold-text">Our Portfolio</h2>
+                <p class="text-lg max-w-2xl mx-auto opacity-90">A glimpse into the extraordinary events we've created for our distinguished clients.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Portfolio Item 1 -->
+                <div class="portfolio-item relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1519671488599-3fafb1b0c013?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Wedding event" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 w-full">
+                        <h3 class="text-xl font-bold text-white mb-2">Royal Wedding</h3>
+                        <p class="text-gold-300">London, UK</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <button class="btn-gold px-6 py-3 rounded-full font-bold">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 2 -->
+                <div class="portfolio-item relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Corporate event" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 w-full">
+                        <h3 class="text-xl font-bold text-white mb-2">Tech Conference</h3>
+                        <p class="text-gold-300">San Francisco, USA</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <button class="btn-gold px-6 py-3 rounded-full font-bold">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Item 3 -->
+                <div class="portfolio-item relative group overflow-hidden rounded-lg">
+                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Private party" class="w-full h-80 object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 w-full">
+                        <h3 class="text-xl font-bold text-white mb-2">Anniversary Gala</h3>
+                        <p class="text-gold-300">Paris, France</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <button class="btn-gold px-6 py-3 rounded-full font-bold">View Details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center text-gold-300 hover:text-gold-100 font-medium text-lg">
+                    View Full Portfolio <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 md:py-32 bg-gradient-to-b from-secondary-dark to-primary-dark section-fade">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 gold-text">Client Testimonials</h2>
+                <p class="text-lg max-w-2xl mx-auto opacity-90">Hear what our clients say about their extraordinary experiences with Happily Dreams Events.</p>
+            </div>
+            
+            <div class="testimonial-slider relative">
+                <div class="glide__track" data-glide-el="track">
+                    <div class="glide__slides">
+                        <!-- Testimonial 1 -->
+                        <div class="glide__slide">
+                            <div class="glass-card p-8 md:p-12 rounded-lg max-w-3xl mx-auto">
+                                <div class="flex items-center mb-6">
+                                    <div class="w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                        <i class="fas fa-quote-left text-gold-300"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">Sarah Johnson</h4>
+                                        <p class="text-sm text-gold-300">Wedding Client</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg italic opacity-90 mb-6">"Happily Dreams Events transformed our wedding into a fairy tale beyond our wildest dreams. Their attention to detail and creative vision was unparalleled. Every guest said it was the most beautiful wedding they'd ever attended."</p>
+                                <div class="flex space-x-1">
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 2 -->
+                        <div class="glide__slide">
+                            <div class="glass-card p-8 md:p-12 rounded-lg max-w-3xl mx-auto">
+                                <div class="flex items-center mb-6">
+                                    <div class="w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                        <i class="fas fa-quote-left text-gold-300"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">Michael Chen</h4>
+                                        <p class="text-sm text-gold-300">Corporate Client</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg italic opacity-90 mb-6">"Our annual conference has never received such glowing feedback. Happily Dreams Events managed every aspect flawlessly, allowing us to focus on our content and networking. The production quality was exceptional and elevated our brand significantly."</p>
+                                <div class="flex space-x-1">
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 3 -->
+                        <div class="glide__slide">
+                            <div class="glass-card p-8 md:p-12 rounded-lg max-w-3xl mx-auto">
+                                <div class="flex items-center mb-6">
+                                    <div class="w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                        <i class="fas fa-quote-left text-gold-300"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">Elena Rodriguez</h4>
+                                        <p class="text-sm text-gold-300">Private Celebration Client</p>
+                                    </div>
+                                </div>
+                                <p class="text-lg italic opacity-90 mb-6">"For my parents' 50th anniversary, I wanted something truly special. Happily Dreams Events created an evening that perfectly captured their love story. The emotional impact was profound, and the execution was seamless. Worth every penny and more."</p>
+                                <div class="flex space-x-1">
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                    <i class="fas fa-star text-gold-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glide__arrows flex justify-center mt-8 space-x-4" data-glide-el="controls">
+                    <button class="glide__arrow glide__arrow--left text-gold-300 hover:text-gold-100 text-2xl" data-glide-dir="<">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="glide__arrow glide__arrow--right text-gold-300 hover:text-gold-100 text-2xl" data-glide-dir=">">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 md:py-32 relative section-fade">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col lg:flex-row">
+                <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 gold-text">Let's Create Magic Together</h2>
+                    <p class="text-lg mb-8 opacity-90">Ready to begin planning your extraordinary event? Contact us for a personalized consultation with one of our event specialists.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                <i class="fas fa-phone text-gold-300"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Phone</h4>
+                                <a href="tel:+11234567890" class="opacity-90 hover:text-gold-300 transition">+1 (123) 456-7890</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-gold-300"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Email</h4>
+                                <a href="mailto:info@happilydreams.com" class="opacity-90 hover:text-gold-300 transition">info@happilydreams.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marker-alt text-gold-300"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Headquarters</h4>
+                                <p class="opacity-90">123 Luxury Avenue, Suite 500<br>New York, NY 10001</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="font-bold text-lg mb-4">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center text-gold-300 hover:bg-opacity-30 transition">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center text-gold-300 hover:bg-opacity-30 transition">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center text-gold-300 hover:bg-opacity-30 transition">
+                                <i class="fab fa-pinterest-p"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center text-gold-300 hover:bg-opacity-30 transition">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 glass-card p-8 md:p-12 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-8 gold-text">Schedule Your Consultation</h3>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-input" id="name" placeholder=" ">
+                            <label for="name" class="form-label">Full Name</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" class="form-input" id="email" placeholder=" ">
+                            <label for="email" class="form-label">Email Address</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="tel" class="form-input" id="phone" placeholder=" ">
+                            <label for="phone" class="form-label">Phone Number</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <select class="form-input" id="event-type">
+                                <option value="" disabled selected></option>
+                                <option value="wedding">Wedding</option>
+                                <option value="corporate">Corporate Event</option>
+                                <option value="private">Private Celebration</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <label for="event-type" class="form-label">Event Type</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea class="form-input" id="message" rows="4" placeholder=" "></textarea>
+                            <label for="message" class="form-label">Tell Us About Your Event</label>
+                        </div>
+                        
+                        <button type="submit" class="btn-gold w-full py-4 rounded-full font-bold text-lg mt-4">Schedule Your Dream</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-12 bg-gradient-to-t from-primary-dark to-transparent">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <a href="#" class="text-2xl font-bold gold-text">Happily Dreams Events</a>
+                    <p class="mt-2 opacity-80">Crafting Timeless Celebrations</p>
+                </div>
+                
+                <div class="flex flex-col items-center md:items-end">
+                    <div class="flex space-x-6 mb-4">
+                        <a href="#" class="text-white hover:text-gold-300 transition">Privacy Policy</a>
+                        <a href="#" class="text-white hover:text-gold-300 transition">Terms of Service</a>
+                        <a href="#" class="text-white hover:text-gold-300 transition">Careers</a>
+                    </div>
+                    <p class="text-sm opacity-70">© 2023 Happily Dreams Events. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <a href="#" id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-gold-500 bg-opacity-20 flex items-center justify-center text-gold-300 hover:bg-opacity-30 transition opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    
+    <script>
+        // Initialize Three.js particle background
+        function initThreeBackground() {
+            const canvas = document.getElementById('three-canvas');
+            const renderer = new THREE.WebGLRenderer({
+                canvas,
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // Create gold particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 1000;
+            
+            const posArray = new Float32Array(particlesCount * 3);
+            const colorArray = new Float32Array(particlesCount * 3);
+            
+            for(let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+                colorArray[i] = Math.random() * 0.2 + 0.8; // Gold colors
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.02,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particlesMesh.rotation.x += 0.0005;
+                particlesMesh.rotation.y += 0.0005;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        
+        // Initialize GSAP animations
+        function initAnimations() {
+            // Animate sections on scroll
+            const sections = document.querySelectorAll('.section-fade');
+            
+            sections.forEach(section => {
+                gsap.fromTo(section, 
+                    { opacity: 0, y: 50 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 80%",
+                            toggleActions: "play none none none"
+                        }
+                    }
+                );
+            });
+            
+            // Back to top button
+            const backToTop = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    gsap.to(backToTop, {
+                        opacity: 1,
+                        visibility: 'visible',
+                        duration: 0.3
+                    });
+                } else {
+                    gsap.to(backToTop, {
+                        opacity: 0,
+                        visibility: 'hidden',
+                        duration: 0.3
+                    });
+                }
+            });
+            
+            backToTop.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Simple testimonial slider
+            let currentTestimonial = 0;
+            const testimonials = document.querySelectorAll('.glide__slide');
+            const prevBtn = document.querySelector('.glide__arrow--left');
+            const nextBtn = document.querySelector('.glide__arrow--right');
+            
+            function showTestimonial(index) {
+                testimonials.forEach((testimonial, i) => {
+                    testimonial.style.display = i === index ? 'block' : 'none';
+                });
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                currentTestimonial = (currentTestimonial - 1 + testimonials.length) % testimonials.length;
+                showTestimonial(currentTestimonial);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+                showTestimonial(currentTestimonial);
+            });
+            
+            // Initialize first testimonial
+            showTestimonial(0);
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initThreeBackground();
+            initAnimations();
+        });
+    </script>
+</body>
+</html>
